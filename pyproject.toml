@@ -7,7 +7,7 @@ dependencies = [
     "pytest",
     "hypothesis",
     "ruff",
-    "ty"
+    "pyright"
 ]
 
 [tool.ruff]
@@ -24,3 +24,7 @@ addopts = "-ra -q"
 testpaths = [
     "tests",
 ]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
