@@ -7,7 +7,7 @@ dependencies = [
     "pytest",
     "hypothesis",
     "ruff",
-    "mypy"
+    "ty"
 ]
 
 [tool.ruff]
@@ -24,10 +24,3 @@ addopts = "-ra -q"
 testpaths = [
     "tests",
 ]
-
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true

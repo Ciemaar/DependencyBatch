@@ -70,7 +70,7 @@ class Job(ABC):  # noqa: B024
         fileobj.seek(0)
 
         # Return a TarFile object opened for reading
-        return tarfile.open(fileobj=fileobj, mode="r:*")  # type: ignore[call-overload]
+        return tarfile.open(fileobj=fileobj, mode="r:*")
 
 
 class QueuedJob(Job):

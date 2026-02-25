@@ -36,7 +36,7 @@ class ArchiveJob(Job):
         fileobj = tempfile.TemporaryFile()  # noqa: SIM115
         fileobj.write(self._tar_content)
         fileobj.seek(0)
-        return tarfile.open(fileobj=fileobj, mode="r:*")  # type: ignore[call-overload]
+        return tarfile.open(fileobj=fileobj, mode="r:*")
 
 
 def test_job_lifecycle() -> None:
