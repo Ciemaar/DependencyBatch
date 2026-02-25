@@ -1,0 +1,33 @@
+[project]
+name = "model"
+version = "0.1.0"
+description = "A job queue model library"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest",
+    "hypothesis",
+    "ruff",
+    "mypy"
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = []
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
