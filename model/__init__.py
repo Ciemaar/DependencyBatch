@@ -1,3 +1,8 @@
+"""
+This module provides abstract base classes and default implementations for managing
+jobs and queues. It includes support for local file handling and tarball archiving.
+"""
+
 import os
 import shutil
 import tarfile
@@ -8,6 +13,12 @@ from typing import Any
 
 
 class Job(ABC):  # noqa: B024
+    """
+    Abstract base class representing a job.
+
+    A job can have dependencies, results, and associated local files.
+    """
+
     def __init__(self) -> None:
         self.depends_on: list[Job] = []
         self.result_of: list[Job] = []
@@ -25,6 +36,9 @@ class Job(ABC):  # noqa: B024
 
         The base class implementation of this method assumes that get_tar() is
         implemented and can be used to get the data.
+
+        Returns:
+            str: The path to the local directory containing the job's files.
         """
         if self.local_dir:
             return self.local_dir
@@ -39,6 +53,9 @@ class Job(ABC):  # noqa: B024
 
         The base class assumes that get_local_folder() is implemented and can be used
         to get the folder to check.
+
+        Returns:
+            list[str]: A list of file paths.
         """
         # TODO: Make this recursive
         folder = self.get_local_folder()
@@ -50,11 +67,15 @@ class Job(ABC):  # noqa: B024
         The base class assumes that get_filenames() is implemented and can be used
         to get the files to pack.
 
-        compression:
-           ''         no compression/automatic compression
-           'gz'       gzip compression
-           'bz2'      bzip2 compression
-           'xz'       lzma compression
+        Args:
+            compression (str): Compression mode.
+                ''         no compression/automatic compression
+                'gz'       gzip compression
+                'bz2'      bzip2 compression
+                'xz'       lzma compression
+
+        Returns:
+            tarfile.TarFile: A TarFile object opened for reading.
         """
         mode = "w:" + compression
         fileobj = tempfile.TemporaryFile()  # noqa: SIM115
@@ -80,6 +101,10 @@ class QueuedJob(Job):
 
 
 class Queue(ABC):
+    """
+    Abstract base class representing a job queue.
+    """
+
     def __init__(self, job_class: type[Job] = QueuedJob) -> None:
         self.openJobs: dict = {}
         self.job_class = job_class
@@ -87,24 +112,42 @@ class Queue(ABC):
     @abstractmethod
     def queue_job(self, job: Job) -> None:
         """
-        Add the given job to this queue
+        Add the given job to this queue.
+
+        Args:
+            job (Job): The job to add to the queue.
         """
         pass
 
     def jobs(self) -> Iterator[Job]:
         """
-        A generator that returns jobs
-        the same job will not be returned twice by the
-        same queue object
+        A generator that returns jobs.
+
+        The same job will not be returned twice by the same queue object.
+
+        Yields:
+            Job: The next job in the queue.
         """
         return iter(self.allJobs())
 
     @abstractmethod
     def allJobs(self) -> list[Job]:
+        """
+        Get all jobs currently in the queue.
+
+        Returns:
+            list[Job]: A list of all jobs.
+        """
         pass
 
     @abstractmethod
     def delete(self, job: Job) -> None:
+        """
+        Remove a job from the queue.
+
+        Args:
+            job (Job): The job to remove.
+        """
         pass
 
 
