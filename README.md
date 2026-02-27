@@ -4,7 +4,7 @@ A modern, type-safe Python library for modeling and managing job queues. This li
 
 ## Requirements
 
-*   Python 3.12 or higher
+- Python 3.12 or higher
 
 ## Installation
 
@@ -63,12 +63,13 @@ This project uses modern Python tooling for code quality and testing.
 
 ### Setup
 
-1.  Clone the repository.
-2.  Install dependencies:
+1. Clone the repository.
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+1. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ### Running Tests
 
@@ -101,4 +102,4 @@ This project uses GitHub Actions for Continuous Integration. The workflow define
 
 ## Future Work
 
-*   AWS Integration (S3 for storage, SQS for queues) is planned for future releases. Currently, only local file and memory-based implementations are provided.
+- AWS Integration (S3 for storage, SQS for queues) is planned for future releases. Currently, only local file and memory-based implementations are provided.

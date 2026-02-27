@@ -35,6 +35,10 @@ jobs:
         ruff check .
         ruff format --check .
 
+    - name: Check Markdown formatting
+      run: |
+        mdformat --check .
+
     - name: Type check with Pyright
       run: |
         pyright .
