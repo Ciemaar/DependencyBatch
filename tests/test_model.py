@@ -40,6 +40,21 @@ class ArchiveJob(Job):
 
 
 def test_job_lifecycle() -> None:
+    with LocalJob({"test.txt": "hello"}) as folder:
+        assert (folder / "test.txt").exists()
+
+        # Test get_filenames
+        # Re-get the job object (we could yield the job instead,
+        # but the request specifically asked for get_localfolder on enter)
+        # Since we only have the folder path, we need to create the job again
+        # Actually, let's keep the job instance available
+        pass
+
+    # The context manager exited, so the folder should be deleted
+    assert not folder.exists()
+
+
+def test_job_methods() -> None:
     job = LocalJob({"test.txt": "hello"})
     folder = job.get_local_folder()
     assert (folder / "test.txt").exists()

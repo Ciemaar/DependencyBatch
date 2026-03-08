@@ -25,6 +25,17 @@ class Job(ABC):  # noqa: B024
         self.results: list[Any] = []
         self.local_dir: Path | None = None
 
+    def __enter__(self) -> Path:
+        return self.get_local_folder()
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: Any | None,
+    ) -> None:
+        self.close()
+
     def close(self) -> None:
         """Cleanup any local files and close the job."""
         if self.local_dir and self.local_dir.is_dir():

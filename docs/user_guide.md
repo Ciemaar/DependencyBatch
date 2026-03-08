@@ -68,16 +68,15 @@ tar_archive.close()
 
 #### Working with Archived Jobs
 
-If a job is initialized from an existing archive (e.g., downloaded from a remote server), calling `job.get_local_folder()` will automatically extract the tarball into a secure temporary directory.
+If a job is initialized from an existing archive (e.g., downloaded from a remote server), calling `job.get_local_folder()` will automatically extract the tarball into a secure temporary directory. The `Job` class also acts as a context manager, returning the local folder path and automatically cleaning it up upon exit.
 
 ```python
 # Assuming 'job' was created from a remote tarball
-local_dir = job.get_local_folder()
-print(f"Job files extracted to: {local_dir}")
-# ... process files in local_dir ...
+with job as local_dir:
+    print(f"Job files extracted to: {local_dir}")
+    # ... process files in local_dir ...
 
-# Clean up when done
-job.close()
+# The local directory is automatically cleaned up after the with block
 ```
 
 ## Using Queues
