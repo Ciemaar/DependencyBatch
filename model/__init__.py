@@ -25,6 +25,7 @@ class Job(ABC):  # noqa: B024
         self.result_of: set[Job] = set()
         self.results: set[Path] = set()
         self.local_dir: Path | None = None
+        self._temp_dir_obj: tempfile.TemporaryDirectory[str] | None = None
 
     def __enter__(self) -> Path:
         return self.get_local_folder()
@@ -40,7 +41,10 @@ class Job(ABC):  # noqa: B024
     def close(self) -> None:
         """Cleanup any local files and close the job."""
         self.handle_results()
-        if self.local_dir and self.local_dir.is_dir():
+        if self._temp_dir_obj:
+            self._temp_dir_obj.cleanup()
+            self._temp_dir_obj = None
+        elif self.local_dir and self.local_dir.is_dir():
             shutil.rmtree(self.local_dir)
         self.local_dir = None
 
@@ -93,7 +97,8 @@ class Job(ABC):  # noqa: B024
         """
         if self.local_dir:
             return self.local_dir
-        self.local_dir = Path(tempfile.mkdtemp())
+        self._temp_dir_obj = tempfile.TemporaryDirectory()
+        self.local_dir = Path(self._temp_dir_obj.name)
         tar = self.get_tar()
         tar.extractall(self.local_dir, filter="data")
         tar.close()

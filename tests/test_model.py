@@ -18,7 +18,8 @@ class LocalJob(Job):
     def get_local_folder(self) -> Path:
         if self.local_dir:
             return self.local_dir
-        self.local_dir = Path(tempfile.mkdtemp())
+        self._temp_dir_obj = tempfile.TemporaryDirectory()
+        self.local_dir = Path(self._temp_dir_obj.name)
         for name, content in self._initial_files.items():
             with open(self.local_dir / name, "w") as f:
                 f.write(content)
