@@ -121,7 +121,7 @@ The `Job` class includes `depends_on` and `result_of` attributes (lists of `Job`
 
 ### Results
 
-You can store the output of a job in the `results` list attribute.
+You can store the output of a job in the `results` list attribute. This is simply an empty Python `list` initialized on the `Job` object. The base library does not include any methods that automatically read from or write to this list; it is provided purely as a convenient container for your custom subclasses or orchestration logic to store output data (like parsed metrics or status dictionaries).
 
 ## Security Note
 
