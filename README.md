@@ -14,7 +14,14 @@ To install the library and its dependencies:
 pip install -r requirements.txt
 ```
 
-## Usage
+## Documentation
+
+For comprehensive information on how to use and contribute to this project, please refer to the following guides:
+
+- **[User Guide](docs/user_guide.md)**: Explains the core concepts, custom jobs, and queue management.
+- **[Developer Guide](docs/developer_guide.md)**: Covers environment setup, testing, code quality tools, and CI/CD.
+
+## Quick Start
 
 ### Creating a Custom Job
 

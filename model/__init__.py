@@ -97,6 +97,8 @@ class Job(ABC):  # noqa: B024
 class QueuedJob(Job):
     """A default implementation of Job."""
 
+    pass
+
 
 class Queue(ABC):
     """
