@@ -1,6 +1,6 @@
-import os
 import tarfile
 import tempfile
+from pathlib import Path
 
 from hypothesis import given
 from hypothesis import strategies as st
@@ -15,12 +15,12 @@ class LocalJob(Job):
         super().__init__()
         self._initial_files = files or {}
 
-    def get_local_folder(self) -> str:
+    def get_local_folder(self) -> Path:
         if self.local_dir:
             return self.local_dir
-        self.local_dir = tempfile.mkdtemp()
+        self.local_dir = Path(tempfile.mkdtemp())
         for name, content in self._initial_files.items():
-            with open(os.path.join(self.local_dir, name), "w") as f:
+            with open(self.local_dir / name, "w") as f:
                 f.write(content)
         return self.local_dir
 
@@ -42,12 +42,12 @@ class ArchiveJob(Job):
 def test_job_lifecycle() -> None:
     job = LocalJob({"test.txt": "hello"})
     folder = job.get_local_folder()
-    assert os.path.exists(os.path.join(folder, "test.txt"))
+    assert (folder / "test.txt").exists()
 
     # Test get_filenames
     filenames = job.get_filenames()
     assert len(filenames) == 1
-    assert filenames[0].endswith("test.txt")
+    assert filenames[0].name == "test.txt"
 
     # Test get_tar
     tar = job.get_tar()
@@ -59,7 +59,7 @@ def test_job_lifecycle() -> None:
 
     # Test close
     job.close()
-    assert not os.path.exists(folder)
+    assert not folder.exists()
     assert job.local_dir is None
 
 
@@ -81,13 +81,13 @@ def test_archive_job() -> None:
     # Create ArchiveJob
     job2 = ArchiveJob(content)
     folder2 = job2.get_local_folder()
-    assert os.path.exists(os.path.join(folder2, "foo.txt"))
+    assert (folder2 / "foo.txt").exists()
 
-    with open(os.path.join(folder2, "foo.txt")) as f:
+    with open(folder2 / "foo.txt") as f:
         assert f.read() == "bar"
 
     filenames2 = job2.get_filenames()
-    assert any(f.endswith("foo.txt") for f in filenames2)
+    assert any(f.name == "foo.txt" for f in filenames2)
     job2.close()
 
 

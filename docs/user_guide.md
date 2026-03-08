@@ -34,14 +34,14 @@ When a job needs to work with local files, it uses a local folder. You can imple
 
 ```python
 from model import Job
-import os
+from pathlib import Path
 
 class MyAnalysisJob(Job):
-    def __init__(self, data_file: str):
+    def __init__(self, data_file: str | Path):
         super().__init__()
-        self.data_file = data_file
+        self.data_file = Path(data_file)
 
-    def get_filenames(self) -> list[str]:
+    def get_filenames(self) -> list[Path]:
         # Return the list of files associated with this job
         return [self.data_file]
 ```

@@ -3,12 +3,12 @@ This module provides abstract base classes and default implementations for manag
 jobs and queues. It includes support for local file handling and tarball archiving.
 """
 
-import os
 import shutil
 import tarfile
 import tempfile
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
+from pathlib import Path
 from typing import Any
 
 
@@ -23,43 +23,43 @@ class Job(ABC):  # noqa: B024
         self.depends_on: list[Job] = []
         self.result_of: list[Job] = []
         self.results: list[Any] = []
-        self.local_dir: str | None = None
+        self.local_dir: Path | None = None
 
     def close(self) -> None:
         """Cleanup any local files and close the job."""
-        if self.local_dir and os.path.isdir(self.local_dir):
+        if self.local_dir and self.local_dir.is_dir():
             shutil.rmtree(self.local_dir)
         self.local_dir = None
 
-    def get_local_folder(self) -> str:
+    def get_local_folder(self) -> Path:
         """Get a local folder with the files of this job.
 
         The base class implementation of this method assumes that get_tar() is
         implemented and can be used to get the data.
 
         Returns:
-            str: The path to the local directory containing the job's files.
+            Path: The path to the local directory containing the job's files.
         """
         if self.local_dir:
             return self.local_dir
-        self.local_dir = tempfile.mkdtemp()
+        self.local_dir = Path(tempfile.mkdtemp())
         tar = self.get_tar()
         tar.extractall(self.local_dir, filter="data")
         tar.close()
         return self.local_dir
 
-    def get_filenames(self) -> list[str]:
+    def get_filenames(self) -> list[Path]:
         """Get the local filenames for this Job retrieving if necessary.
 
         The base class assumes that get_local_folder() is implemented and can be used
         to get the folder to check.
 
         Returns:
-            list[str]: A list of file paths.
+            list[Path]: A list of file paths.
         """
         # TODO: Make this recursive
         folder = self.get_local_folder()
-        return [os.path.join(folder, f) for f in os.listdir(folder)]
+        return [f for f in folder.iterdir() if f.is_file()]
 
     def get_tar(self, compression: str = "gz") -> tarfile.TarFile:
         """Get the data related to this job as a tar file object.
@@ -83,9 +83,7 @@ class Job(ABC):  # noqa: B024
         # Open tar for writing
         with tarfile.open(fileobj=fileobj, mode=mode) as tfile:  # type: ignore[call-overload]
             for file_path in self.get_filenames():
-                tfile.add(
-                    file_path, arcname=os.path.basename(file_path), recursive=True
-                )
+                tfile.add(file_path, arcname=file_path.name, recursive=True)
 
         # Seek to beginning to allow reading
         fileobj.seek(0)
