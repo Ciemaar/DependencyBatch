@@ -14,6 +14,10 @@ class LocalJob(Job):
     def __init__(self, files: dict[str, str] | None = None) -> None:
         super().__init__()
         self._initial_files = files or {}
+        # Explicitly declare local_dir and _temp_dir_obj to satisfy static analysis
+        # (they are already initialized in super().__init__ but pylint can be strict)
+        self.local_dir: Path | None = None
+        self._temp_dir_obj: tempfile.TemporaryDirectory[str] | None = None
 
     def get_local_folder(self) -> Path:
         if self.local_dir:
