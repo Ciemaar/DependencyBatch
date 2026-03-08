@@ -24,6 +24,9 @@ class LocalJob(Job):
                 f.write(content)
         return self.local_dir
 
+    def store_results(self, archive_path: Path) -> None:
+        pass
+
 
 class ArchiveJob(Job):
     """Job that starts with a tarball."""
@@ -37,6 +40,9 @@ class ArchiveJob(Job):
         fileobj.write(self._tar_content)
         fileobj.seek(0)
         return tarfile.open(fileobj=fileobj, mode="r:*")
+
+    def store_results(self, archive_path: Path) -> None:
+        pass
 
 
 def test_job_lifecycle() -> None:
@@ -104,6 +110,36 @@ def test_archive_job() -> None:
     filenames2 = job2.get_filenames()
     assert any(f.name == "foo.txt" for f in filenames2)
     job2.close()
+
+
+def test_store_results() -> None:
+    job = LocalJob({"output.txt": "data"})
+    folder = job.get_local_folder()
+
+    # Simulate some result file
+    res_path = folder / "output.txt"
+    job.results.add(res_path)
+
+    # We need to track if store_results is called.
+    # We can patch it or use a custom subclass.
+    stored_path = None
+
+    def mock_store(archive_path: Path) -> None:
+        nonlocal stored_path
+        stored_path = archive_path
+        # We can read the tar file before it gets deleted by the finally block
+        # Actually handle_results deletes the temp path after store_results
+        # returns, so we must assert inside here or copy it.
+        assert archive_path.exists()
+        with tarfile.open(archive_path, "r:gz") as tar:
+            members = tar.getnames()
+            assert "output.txt" in members
+
+    job.store_results = mock_store  # type: ignore[method-assign]
+
+    job.close()
+
+    assert stored_path is not None
 
 
 def test_queue_operations() -> None:

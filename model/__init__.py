@@ -3,6 +3,7 @@ This module provides abstract base classes and default implementations for manag
 jobs and queues. It includes support for local file handling and tarball archiving.
 """
 
+import os
 import shutil
 import tarfile
 import tempfile
@@ -20,9 +21,9 @@ class Job(ABC):  # noqa: B024
     """
 
     def __init__(self) -> None:
-        self.depends_on: list[Job] = []
-        self.result_of: list[Job] = []
-        self.results: list[Any] = []
+        self.depends_on: set[Job] = set()
+        self.result_of: set[Job] = set()
+        self.results: set[Path] = set()
         self.local_dir: Path | None = None
 
     def __enter__(self) -> Path:
@@ -38,9 +39,48 @@ class Job(ABC):  # noqa: B024
 
     def close(self) -> None:
         """Cleanup any local files and close the job."""
+        self.handle_results()
         if self.local_dir and self.local_dir.is_dir():
             shutil.rmtree(self.local_dir)
         self.local_dir = None
+
+    def handle_results(self) -> None:
+        """
+        Compress the files in `self.results` into a temporary tar file
+        and call `store_results` with the path to that tar file.
+        """
+        if not self.results:
+            return
+
+        # Create a temporary file to store the tar archive.
+        # It's created outside of local_dir to ensure it survives
+        # local_dir cleanup if store_results is asynchronous or delayed
+        # (though store_results should ideally handle it synchronously).
+        fd, temp_path_str = tempfile.mkstemp(suffix=".tar.gz")
+        os.close(fd)
+        temp_path = Path(temp_path_str)
+
+        try:
+            with tarfile.open(temp_path, mode="w:gz") as tar:
+                for res_path in self.results:
+                    if res_path.exists():
+                        tar.add(res_path, arcname=res_path.name)
+
+            self.store_results(temp_path)
+        finally:
+            if temp_path.exists():
+                temp_path.unlink()
+
+    @abstractmethod
+    def store_results(self, archive_path: Path) -> None:
+        """
+        Store the compressed results archive.
+
+        Args:
+            archive_path (Path): The path to the temporary tarball containing the
+                                 results.
+        """
+        pass
 
     def get_local_folder(self) -> Path:
         """Get a local folder with the files of this job.
@@ -106,7 +146,12 @@ class Job(ABC):  # noqa: B024
 class QueuedJob(Job):
     """A default implementation of Job."""
 
-    pass
+    def store_results(self, archive_path: Path) -> None:
+        """
+        Default implementation for QueuedJob does nothing with the results.
+        Subclasses should override this to upload or copy the archive.
+        """
+        pass
 
 
 class Queue(ABC):
