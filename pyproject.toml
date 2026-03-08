@@ -1,5 +1,5 @@
 [project]
-name = "model"
+name = "dependency_batch"
 version = "0.1.0"
 description = "A job queue model library"
 requires-python = ">=3.12"

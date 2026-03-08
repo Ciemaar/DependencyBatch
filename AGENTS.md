@@ -21,7 +21,7 @@ This project uses specific tooling and standards for Python development. Please 
 
 - Write tests in `tests/`.
 - Use `pytest` fixtures where appropriate.
-- Aim for high test coverage, especially for core logic in `model/`.
+- Aim for high test coverage, especially for core logic in `dependency_batch/`.
 - Run tests with `PYTHONPATH=. pytest`.
 
 ## Tooling Commands

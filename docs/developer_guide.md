@@ -1,6 +1,6 @@
 # Developer Guide
 
-Welcome to the `model` project developer guide! This document explains how to set up your environment, run tests, and contribute to the codebase.
+Welcome to the `dependency_batch` project developer guide! This document explains how to set up your environment, run tests, and contribute to the codebase.
 
 ## Environment Setup
 
@@ -53,7 +53,7 @@ PYTHONPATH=. pytest
 To run a specific test file:
 
 ```bash
-PYTHONPATH=. pytest tests/test_model.py
+PYTHONPATH=. pytest tests/test_dependency_batch.py
 ```
 
 ### Type Checking

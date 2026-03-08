@@ -5,7 +5,7 @@ from pathlib import Path
 from hypothesis import given
 from hypothesis import strategies as st
 
-from model import Job, LocalQueue
+from dependency_batch import Job, LocalQueue
 
 
 class LocalJob(Job):

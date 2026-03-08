@@ -1,6 +1,6 @@
 # User Guide
 
-This guide explains how to use the `model` library to manage jobs and job queues in your Python applications.
+This guide explains how to use the `dependency_batch` library to manage jobs and job queues in your Python applications.
 
 ## Core Concepts
 
@@ -18,7 +18,7 @@ The `Job` base class provides infrastructure for handling local files.
 The simplest way to use a job is the default `QueuedJob` class, which is a concrete implementation of `Job`.
 
 ```python
-from model import QueuedJob
+from dependency_batch import QueuedJob
 
 job = QueuedJob()
 # You can now use the job instance
@@ -33,7 +33,7 @@ To implement specific logic, you should inherit from `Job`.
 When a job needs to work with local files, it uses a local folder. You can implement the `get_filenames` method to specify which files belong to this job.
 
 ```python
-from model import Job
+from dependency_batch import Job
 from pathlib import Path
 
 class MyAnalysisJob(Job):
@@ -90,7 +90,7 @@ with job as local_dir:
 The `LocalQueue` is an in-memory queue implementation provided by the library.
 
 ```python
-from model import LocalQueue, QueuedJob
+from dependency_batch import LocalQueue, QueuedJob
 
 # 1. Initialize the queue
 queue = LocalQueue()

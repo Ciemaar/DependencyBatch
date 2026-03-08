@@ -1,6 +1,6 @@
-# Job Queue Model Library
+# Dependency Batch
 
-A modern, type-safe Python library for modeling and managing job queues. This library provides abstract base classes and default implementations for jobs (`Job`, `QueuedJob`) and queues (`Queue`, `LocalQueue`), supporting file-based job data handling with secure tarball extraction.
+A modern, type-safe Python library for modeling and managing job queues and batch dependencies. This library provides abstract base classes and default implementations for jobs (`Job`, `QueuedJob`) and queues (`Queue`, `LocalQueue`), supporting file-based job data handling with secure tarball extraction.
 
 ## Requirements
 
@@ -28,7 +28,7 @@ For comprehensive information on how to use and contribute to this project, plea
 You can inherit from `Job` to create custom job types. The base `Job` class handles local file management and tarball creation/extraction.
 
 ```python
-from model import Job
+from dependency_batch import Job
 
 class MyJob(Job):
     def get_filenames(self) -> list[str]:
@@ -45,7 +45,7 @@ class MyJob(Job):
 `LocalQueue` is a concrete implementation of `Queue` that stores jobs in memory.
 
 ```python
-from model import LocalQueue, QueuedJob
+from dependency_batch import LocalQueue, QueuedJob
 
 # Create a queue
 queue = LocalQueue()
