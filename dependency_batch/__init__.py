@@ -1,6 +1,6 @@
-"""
-This module provides abstract base classes and default implementations for managing
-jobs and queues. It includes support for local file handling and tarball archiving.
+"""This module provides abstract base classes and default implementations for managing.
+
+It includes support for local file handling and tarball archiving for jobs and queues.
 """
 
 import os
@@ -14,13 +14,13 @@ from typing import Any
 
 
 class Job(ABC):  # noqa: B024
-    """
-    Abstract base class representing a job.
+    """Abstract base class representing a job.
 
     A job can have dependencies, results, and associated local files.
     """
 
     def __init__(self) -> None:
+        """Initialize a new Job instance."""
         self.depends_on: set[Job] = set()
         self.result_of: set[Job] = set()
         self.results: set[Path] = set()
@@ -28,6 +28,11 @@ class Job(ABC):  # noqa: B024
         self._temp_dir_obj: tempfile.TemporaryDirectory[str] | None = None
 
     def __enter__(self) -> Path:
+        """Enter the context manager, returning the local folder path.
+
+        Returns:
+            Path: The path to the job's local folder.
+        """
         return self.get_local_folder()
 
     def __exit__(
@@ -36,6 +41,13 @@ class Job(ABC):  # noqa: B024
         exc_val: BaseException | None,
         exc_tb: Any | None,
     ) -> None:
+        """Exit the context manager, cleaning up resources.
+
+        Args:
+            exc_type: The exception type, if any.
+            exc_val: The exception value, if any.
+            exc_tb: The exception traceback, if any.
+        """
         self.close()
 
     def close(self) -> None:
@@ -49,9 +61,9 @@ class Job(ABC):  # noqa: B024
         self.local_dir = None
 
     def handle_results(self) -> None:
-        """
-        Compress the files in `self.results` into a temporary tar file
-        and call `store_results` with the path to that tar file.
+        """Compress the files in `self.results` into a temporary tar file.
+
+        Calls `store_results` with the path to that tar file.
         """
         if not self.results:
             return
@@ -77,8 +89,7 @@ class Job(ABC):  # noqa: B024
 
     @abstractmethod
     def store_results(self, archive_path: Path) -> None:
-        """
-        Store the compressed results archive.
+        """Store the compressed results archive.
 
         Args:
             archive_path (Path): The path to the temporary tarball containing the
@@ -152,26 +163,31 @@ class QueuedJob(Job):
     """A default implementation of Job."""
 
     def store_results(self, archive_path: Path) -> None:
-        """
-        Default implementation for QueuedJob does nothing with the results.
+        """Default implementation for QueuedJob does nothing with the results.
+
         Subclasses should override this to upload or copy the archive.
+
+        Args:
+            archive_path (Path): The path to the temporary tarball.
         """
         pass
 
 
 class Queue(ABC):
-    """
-    Abstract base class representing a job queue.
-    """
+    """Abstract base class representing a job queue."""
 
     def __init__(self, job_class: type[Job] = QueuedJob) -> None:
+        """Initialize the queue.
+
+        Args:
+            job_class: The default class to use for jobs.
+        """
         self.openJobs: dict = {}
         self.job_class = job_class
 
     @abstractmethod
     def queue_job(self, job: Job) -> None:
-        """
-        Add the given job to this queue.
+        """Add the given job to this queue.
 
         Args:
             job (Job): The job to add to the queue.
@@ -179,8 +195,7 @@ class Queue(ABC):
         pass
 
     def jobs(self) -> Iterator[Job]:
-        """
-        A generator that returns jobs.
+        """A generator that returns jobs.
 
         The same job will not be returned twice by the same queue object.
 
@@ -191,8 +206,7 @@ class Queue(ABC):
 
     @abstractmethod
     def allJobs(self) -> list[Job]:
-        """
-        Get all jobs currently in the queue.
+        """Get all jobs currently in the queue.
 
         Returns:
             list[Job]: A list of all jobs.
@@ -201,8 +215,7 @@ class Queue(ABC):
 
     @abstractmethod
     def delete(self, job: Job) -> None:
-        """
-        Remove a job from the queue.
+        """Remove a job from the queue.
 
         Args:
             job (Job): The job to remove.
@@ -214,15 +227,35 @@ class LocalQueue(Queue):
     """A concrete Queue implementation using a local list."""
 
     def __init__(self, job_class: type[Job] = QueuedJob) -> None:
+        """Initialize the local queue.
+
+        Args:
+            job_class: The default class to use for jobs.
+        """
         super().__init__(job_class)
         self._jobs: list[Job] = []
 
     def queue_job(self, job: Job) -> None:
+        """Add the given job to this queue.
+
+        Args:
+            job (Job): The job to add.
+        """
         self._jobs.append(job)
 
     def allJobs(self) -> list[Job]:
+        """Get all jobs currently in the queue.
+
+        Returns:
+            list[Job]: A list of all jobs.
+        """
         return list(self._jobs)
 
     def delete(self, job: Job) -> None:
+        """Remove a job from the queue.
+
+        Args:
+            job (Job): The job to remove.
+        """
         if job in self._jobs:
             self._jobs.remove(job)
