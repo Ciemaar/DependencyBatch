@@ -162,10 +162,10 @@ def test_queue_operations() -> None:
     job2 = LocalJob()
 
     q.queue_job(job1)
-    assert len(q.allJobs()) == 1
+    assert len(list(q.all_jobs())) == 1
 
     q.queue_job(job2)
-    assert len(q.allJobs()) == 2
+    assert len(list(q.all_jobs())) == 2
 
     # Test generator
     jobs = list(q.jobs())
@@ -174,8 +174,8 @@ def test_queue_operations() -> None:
     assert job2 in jobs
 
     q.delete(job1)
-    assert len(q.allJobs()) == 1
-    assert q.allJobs()[0] == job2
+    assert len(list(q.all_jobs())) == 1
+    assert list(q.all_jobs())[0] == job2
 
 
 @given(st.lists(st.integers()))
@@ -187,11 +187,11 @@ def test_queue_hypothesis(items: list[int]) -> None:
         q.queue_job(j)
         jobs.append(j)
 
-    assert len(q.allJobs()) == len(items)
+    assert len(list(q.all_jobs())) == len(items)
 
     # Test deletion
     if jobs:
         to_delete = jobs[0]
         q.delete(to_delete)
-        assert len(q.allJobs()) == len(items) - 1
-        assert to_delete not in q.allJobs()
+        assert len(list(q.all_jobs())) == len(items) - 1
+        assert to_delete not in list(q.all_jobs())

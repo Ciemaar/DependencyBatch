@@ -104,7 +104,7 @@ queue.queue_job(job1)
 queue.queue_job(job2)
 
 # 4. List all jobs in the queue
-all_jobs = queue.allJobs()
+all_jobs = list(queue.all_jobs())
 print(f"Total jobs: {len(all_jobs)}")
 
 # 5. Process jobs using the iterator

@@ -7,7 +7,7 @@ import os
 import tarfile
 import tempfile
 from abc import ABC, abstractmethod
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 from types import TracebackType
 
@@ -199,14 +199,14 @@ class Queue(ABC):
         Yields:
             Job: The next job in the queue.
         """
-        return iter(self.allJobs())
+        return iter(self.all_jobs())
 
     @abstractmethod
-    def allJobs(self) -> list[Job]:
+    def all_jobs(self) -> Iterable[Job]:
         """Get all jobs currently in the queue.
 
         Returns:
-            list[Job]: A list of all jobs.
+            Iterable[Job]: An iterable of all jobs.
         """
         pass  # pragma: no cover
 
@@ -240,11 +240,11 @@ class LocalQueue(Queue):
         """
         self._jobs.append(job)
 
-    def allJobs(self) -> list[Job]:
+    def all_jobs(self) -> Iterable[Job]:
         """Get all jobs currently in the queue.
 
         Returns:
-            list[Job]: A list of all jobs.
+            Iterable[Job]: An iterable of all jobs.
         """
         return list(self._jobs)
 
