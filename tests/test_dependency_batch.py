@@ -5,7 +5,7 @@ from pathlib import Path
 from hypothesis import given
 from hypothesis import strategies as st
 
-from dependency_batch import Job, LocalQueue
+from dependency_batch import Job, LocalQueue, QueuedJob
 
 
 class LocalJob(Job):
@@ -145,6 +145,15 @@ def test_store_results() -> None:
     job.close()
 
     assert stored_path is not None
+
+
+def test_queued_job_default() -> None:
+    """Test the default concrete implementation of QueuedJob."""
+    job = QueuedJob()
+
+    # store_results should do nothing
+    fake_path = Path("fake_archive.tar.gz")
+    job.store_results(fake_path)  # Should execute the pass statement without error
 
 
 def test_queue_operations() -> None:

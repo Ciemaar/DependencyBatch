@@ -92,7 +92,7 @@ class Job(ABC):  # noqa: B024
             archive_path (Path): The path to the temporary tarball containing the
                                  results.
         """
-        pass
+        pass  # pragma: no cover
 
     def get_local_folder(self) -> Path:
         """Get a local folder with the files of this job.
@@ -189,7 +189,7 @@ class Queue(ABC):
         Args:
             job (Job): The job to add to the queue.
         """
-        pass
+        pass  # pragma: no cover
 
     def jobs(self) -> Iterator[Job]:
         """A generator that returns jobs.
@@ -208,7 +208,7 @@ class Queue(ABC):
         Returns:
             list[Job]: A list of all jobs.
         """
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def delete(self, job: Job) -> None:
@@ -217,7 +217,7 @@ class Queue(ABC):
         Args:
             job (Job): The job to remove.
         """
-        pass
+        pass  # pragma: no cover
 
 
 class LocalQueue(Queue):

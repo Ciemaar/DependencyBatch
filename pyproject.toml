@@ -7,7 +7,8 @@ dependencies = [
     "pytest",
     "hypothesis",
     "ruff",
-    "pyright"
+    "pyright",
+    "pytest-cov"
 ]
 
 [tool.ruff]
@@ -26,7 +27,7 @@ convention = "google"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q"
+addopts = "-ra -q --cov=dependency_batch --cov-report=term-missing --cov-fail-under=100"
 testpaths = [
     "tests",
 ]
