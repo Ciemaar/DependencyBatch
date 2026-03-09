@@ -4,13 +4,12 @@ It includes support for local file handling and tarball archiving for jobs and q
 """
 
 import os
-import shutil
 import tarfile
 import tempfile
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
+from types import TracebackType
 
 
 class Job(ABC):  # noqa: B024
@@ -39,7 +38,7 @@ class Job(ABC):  # noqa: B024
         self,
         exc_type: type[BaseException] | None,
         exc_val: BaseException | None,
-        exc_tb: Any | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         """Exit the context manager, cleaning up resources.
 
@@ -56,8 +55,6 @@ class Job(ABC):  # noqa: B024
         if self._temp_dir_obj:
             self._temp_dir_obj.cleanup()
             self._temp_dir_obj = None
-        elif self.local_dir and self.local_dir.is_dir():
-            shutil.rmtree(self.local_dir)
         self.local_dir = None
 
     def handle_results(self) -> None:
