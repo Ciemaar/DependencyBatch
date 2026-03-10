@@ -1,0 +1,18 @@
+site_name: Dependency Batch
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: indigo
+    accent: indigo
+nav:
+  - Home: index.md
+  - User Guide: user_guide.md
+  - Developer Guide: developer_guide.md
+  - Tooling Evaluation: tooling_evaluation.md
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true

@@ -39,6 +39,10 @@ jobs:
       run: |
         mdformat --check .
 
+    - name: Build Docs
+      run: |
+        mkdocs build --strict
+
     - name: Type check with Pyright
       run: |
         pyright .

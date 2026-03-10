@@ -88,6 +88,22 @@ To check formatting without modifying files (useful in CI):
 ruff format --check .
 ```
 
+### Pre-commit Hooks
+
+We use `pre-commit` to automatically run code quality tools (`ruff`, `pyright`, `mdformat`) before every commit.
+
+To install the git hooks:
+
+```bash
+pre-commit install
+```
+
+To run the hooks manually on all files:
+
+```bash
+pre-commit run --all-files
+```
+
 ### Markdown Formatting
 
 We use `mdformat` to ensure consistent markdown styling across documentation files.
