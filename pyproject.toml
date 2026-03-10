@@ -36,10 +36,17 @@ convention = "google"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q --cov=dependency_batch --cov-report=term-missing --cov-fail-under=100"
+addopts = "-ra -q --cov"
 testpaths = [
     "tests",
 ]
+
+[tool.coverage.run]
+source = ["dependency_batch"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
 
 [tool.pyright]
 pythonVersion = "3.12"
