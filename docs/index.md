@@ -8,10 +8,16 @@ A modern, type-safe Python library for modeling and managing job queues and batc
 
 ## Installation
 
-To install the library and its dependencies:
+To install the library:
 
 ```bash
-pip install -r requirements.txt
+pip install .
+```
+
+To install the library along with its development tools (testing, linting, docs):
+
+```bash
+pip install -e ".[dev]"
 ```
 
 ## Documentation

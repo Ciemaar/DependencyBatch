@@ -30,13 +30,13 @@ venv\Scripts\activate
 
 ### Installing Dependencies
 
-Install the development tools required:
+Install the library in editable mode along with its development tools:
 
 ```bash
-pip install -r requirements.txt
+pip install -e ".[dev]"
 ```
 
-This installs tools like `pytest`, `hypothesis`, `ruff`, `pyright`, and `mdformat`.
+This installs tools like `pytest`, `hypothesis`, `ruff`, `pyright`, `mkdocs`, and `mdformat`.
 
 ## Development Workflow
 

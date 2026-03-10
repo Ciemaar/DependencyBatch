@@ -3,12 +3,21 @@ name = "dependency_batch"
 version = "0.1.0"
 description = "A job queue model library"
 requires-python = ">=3.12"
-dependencies = [
-    "pytest",
-    "hypothesis",
-    "ruff",
-    "pyright",
-    "pytest-cov"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "hypothesis>=6.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "pyright>=1.1.0",
+    "mdformat>=0.7.0",
+    "mdformat-gfm>=0.3.5",
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "pre-commit>=3.5.0",
+    "codespell>=2.4.0"
 ]
 
 [tool.ruff]
