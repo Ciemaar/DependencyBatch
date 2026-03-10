@@ -4,7 +4,7 @@ This document outlines the evaluation of various development tools for the `depe
 
 ## Formatting & Linting
 
-### Candidates:
+### Formatting & Linting Candidates:
 
 - **Black + Flake8 + isort:** The traditional standard. Very stable, but requires running multiple Python-based CLI tools, which can be slow and require complex configuration synchronization.
 - **Ruff:** An extremely fast Python linter and code formatter written in Rust. It replaces Flake8, Black, isort, pydocstyle, and many other tools.
@@ -15,7 +15,7 @@ This document outlines the evaluation of various development tools for the `depe
 
 ## Type Checking
 
-### Candidates:
+### Type Checking Candidates:
 
 - **Mypy:** The original standard type checker for Python. Robust and widely used, but can be slow on large codebases and sometimes struggles with complex type inferences (like advanced generics).
 - **Pyright:** Microsoft's fast type checker written in TypeScript. Excels at complex type inference, provides excellent IDE integration (Pylance in VS Code), and is generally much faster than Mypy.
@@ -27,7 +27,7 @@ This document outlines the evaluation of various development tools for the `depe
 
 ## Testing
 
-### Candidates:
+### Testing Candidates:
 
 - **unittest:** Built into Python. Verbose, requires class-based test structures, and has less powerful mocking/fixture systems out of the box.
 - **pytest:** The industry standard for Python testing. Supports simple function-based tests, powerful dependency injection via fixtures, and an immense plugin ecosystem.
@@ -38,7 +38,7 @@ This document outlines the evaluation of various development tools for the `depe
 
 ## Documentation Generation
 
-### Candidates:
+### Documentation Generation Candidates:
 
 - **Sphinx:** The traditional documentation generator (used by Python itself). Extremely powerful but uses reStructuredText (reST) by default, which has a steeper learning curve than Markdown.
 - **MkDocs (with Material theme):** A fast, simple static site generator geared towards project documentation. Uses standard Markdown (which we already write in our `docs/` folder) and the Material theme is widely considered the best-looking and most accessible documentation theme available.
@@ -49,7 +49,7 @@ This document outlines the evaluation of various development tools for the `depe
 
 ## Markdown Formatting
 
-### Candidates:
+### Markdown Formatting Candidates:
 
 - **Prettier:** Excellent formatter, but requires a Node.js environment (via `nodeenv`), complicating a pure Python stack.
 - **mdformat:** A Python-based, commonmark-compliant Markdown formatter.
