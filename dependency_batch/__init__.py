@@ -210,7 +210,6 @@ class Queue(ABC):
             job_class: The expected concrete class type for jobs that will be
                        pushed into this queue (defaults to `QueuedJob`).
         """
-        self.openJobs: dict = {}
         self.job_class = job_class
 
     @abstractmethod
