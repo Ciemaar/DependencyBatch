@@ -13,13 +13,19 @@ from types import TracebackType
 
 
 class Job(ABC):  # noqa: B024
-    """Abstract base class representing a job.
+    """Abstract base class representing a single unit of work in a queue.
 
-    A job can have dependencies, results, and associated local files.
+    A `Job` encapsulates the logic for managing its dependencies, output results,
+    and temporary local file processing. It is designed to act as a context manager,
+    safely handling local directory creation and automated cleanup upon exit.
     """
 
     def __init__(self) -> None:
-        """Initialize a new Job instance."""
+        """Initialize a new Job instance with empty dependencies and results.
+
+        Sets up the basic tracking structures for dependency graphs (`depends_on`,
+        `result_of`) and a set for tracking generated output files (`results`).
+        """
         self.depends_on: set[Job] = set()
         self.result_of: set[Job] = set()
         self.results: set[Path] = set()
@@ -27,10 +33,13 @@ class Job(ABC):  # noqa: B024
         self._temp_dir_obj: tempfile.TemporaryDirectory[str] | None = None
 
     def __enter__(self) -> Path:
-        """Enter the context manager, returning the local folder path.
+        """Enter the context manager, automatically providing a temporary workspace.
+
+        This calls `get_local_folder()` to either extract an existing archive or
+        create a fresh, isolated temporary directory for the job to operate within.
 
         Returns:
-            Path: The path to the job's local folder.
+            Path: The absolute path to the job's temporary workspace.
         """
         return self.get_local_folder()
 
@@ -40,17 +49,26 @@ class Job(ABC):  # noqa: B024
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
-        """Exit the context manager, cleaning up resources.
+        """Exit the context manager and trigger automatic cleanup.
+
+        Ensures that `close()` is called regardless of whether the context exited
+        cleanly or due to an exception. This guarantees that output results are
+        processed and temporary directories are safely removed.
 
         Args:
-            exc_type: The exception type, if any.
-            exc_val: The exception value, if any.
-            exc_tb: The exception traceback, if any.
+            exc_type: The type of the exception that caused the context to exit.
+            exc_val: The instance of the exception that caused the context to exit.
+            exc_tb: The traceback corresponding to the exception.
         """
         self.close()
 
     def close(self) -> None:
-        """Cleanup any local files and close the job."""
+        """Finalize the job lifecycle, process results, and perform cleanup.
+
+        This method triggers `handle_results()` to compress and store any tracked
+        output files. Afterward, it forcefully removes the temporary local workspace
+        associated with this job to prevent disk space leaks.
+        """
         self.handle_results()
         if self._temp_dir_obj:
             self._temp_dir_obj.cleanup()
@@ -58,9 +76,12 @@ class Job(ABC):  # noqa: B024
         self.local_dir = None
 
     def handle_results(self) -> None:
-        """Compress the files in `self.results` into a temporary tar file.
+        """Package and route tracked job outputs for long-term storage.
 
-        Calls `store_results` with the path to that tar file.
+        If any file paths were added to the `self.results` set during execution,
+        this method aggregates them into a highly-compressed, temporary `.tar.gz`
+        archive. It then delegates the actual storage logic (like a cloud upload)
+        to the abstract `store_results` method.
         """
         if not self.results:
             return
@@ -86,22 +107,27 @@ class Job(ABC):  # noqa: B024
 
     @abstractmethod
     def store_results(self, archive_path: Path) -> None:
-        """Store the compressed results archive.
+        """Define the custom storage destination for the job's final output archive.
+
+        Subclasses must implement this method to dictate how the generated
+        `.tar.gz` artifact is persisted (e.g., pushed to AWS S3, a database,
+        or moved to a permanent local directory).
 
         Args:
-            archive_path (Path): The path to the temporary tarball containing the
-                                 results.
+            archive_path (Path): The path to the locally generated `.tar.gz`
+                                 file containing the job's results.
         """
         pass  # pragma: no cover
 
     def get_local_folder(self) -> Path:
-        """Get a local folder with the files of this job.
+        """Establish or retrieve the local workspace directory for the job.
 
-        The base class implementation of this method assumes that get_tar() is
-        implemented and can be used to get the data.
+        If a workspace doesn't exist, it safely creates a temporary directory
+        and populates it by extracting the job's underlying tarball data
+        (via `get_tar()`), using strict security filters to prevent path traversal.
 
         Returns:
-            Path: The path to the local directory containing the job's files.
+            Path: The path to the newly populated local workspace directory.
         """
         if self.local_dir:
             return self.local_dir
@@ -113,33 +139,32 @@ class Job(ABC):  # noqa: B024
         return self.local_dir
 
     def get_filenames(self) -> list[Path]:
-        """Get the local filenames for this Job retrieving if necessary.
+        """List all regular files present in the job's local workspace.
 
-        The base class assumes that get_local_folder() is implemented and can be used
-        to get the folder to check.
+        This implicitly invokes `get_local_folder()` to ensure the workspace
+        is established before attempting to read its contents.
 
         Returns:
-            list[Path]: A list of file paths.
+            list[Path]: An absolute list of file paths found in the directory.
         """
         # TODO: Make this recursive
         folder = self.get_local_folder()
         return [f for f in folder.iterdir() if f.is_file()]
 
     def get_tar(self, compression: str = "gz") -> tarfile.TarFile:
-        """Get the data related to this job as a tar file object.
+        """Generate a tarball archive containing all files in the local workspace.
 
-        The base class assumes that get_filenames() is implemented and can be used
-        to get the files to pack.
+        This method dynamically queries `get_filenames()` and writes those paths
+        to an in-memory or temporary file-backed tarball. It resets the file
+        pointer before returning, meaning the caller receives a ready-to-read
+        archive handle.
 
         Args:
-            compression (str): Compression mode.
-                ''         no compression/automatic compression
-                'gz'       gzip compression
-                'bz2'      bzip2 compression
-                'xz'       lzma compression
+            compression (str): The tarfile compression scheme to apply. Supported
+                modes include '' (none), 'gz' (gzip), 'bz2' (bzip2), and 'xz' (lzma).
 
         Returns:
-            tarfile.TarFile: A TarFile object opened for reading.
+            tarfile.TarFile: A tarfile object initialized in read mode (`r:*`).
         """
         mode = "w:" + compression
         fileobj = tempfile.TemporaryFile()  # noqa: SIM115
@@ -157,102 +182,113 @@ class Job(ABC):  # noqa: B024
 
 
 class QueuedJob(Job):
-    """A default implementation of Job."""
+    """A basic, concrete implementation of the abstract Job class.
+
+    This class can be used as a standalone structural entity for testing queue
+    logistics, but it drops all output artifacts by default.
+    """
 
     def store_results(self, archive_path: Path) -> None:
-        """Default implementation for QueuedJob does nothing with the results.
+        """Discard the results archive explicitly.
 
-        Subclasses should override this to upload or copy the archive.
+        As a default stub implementation, this method takes no action. If persistence
+        is desired, a specialized Job subclass must be created to override it.
 
         Args:
-            archive_path (Path): The path to the temporary tarball.
+            archive_path (Path): The ignored path to the generated results tarball.
         """
         pass
 
 
 class Queue(ABC):
-    """Abstract base class representing a job queue."""
+    """Abstract base class dictating the contract for managing a collection of jobs."""
 
     def __init__(self, job_class: type[Job] = QueuedJob) -> None:
-        """Initialize the queue.
+        """Configure the baseline structure of the job queue.
 
         Args:
-            job_class: The default class to use for jobs.
+            job_class: The expected concrete class type for jobs that will be
+                       pushed into this queue (defaults to `QueuedJob`).
         """
         self.openJobs: dict = {}
         self.job_class = job_class
 
     @abstractmethod
     def queue_job(self, job: Job) -> None:
-        """Add the given job to this queue.
+        """Submit a new job instance into the active queue architecture.
 
         Args:
-            job (Job): The job to add to the queue.
+            job (Job): The unstarted job instance ready for tracking/execution.
         """
         pass  # pragma: no cover
 
     def jobs(self) -> Iterator[Job]:
-        """A generator that returns jobs.
+        """Provide an active, lazy iterator over the current jobs in the queue.
 
-        The same job will not be returned twice by the same queue object.
+        This relies on the abstract `all_jobs()` method to supply the source data,
+        ensuring the queue can be iterated without necessarily loading all items
+        into memory at once (depending on the subclass implementation).
 
         Yields:
-            Job: The next job in the queue.
+            Job: Successive uncompleted jobs awaiting processing.
         """
         return iter(self.all_jobs())
 
     @abstractmethod
     def all_jobs(self) -> Iterable[Job]:
-        """Get all jobs currently in the queue.
+        """Retrieve the definitive set of all jobs currently tracked by the queue.
 
         Returns:
-            Iterable[Job]: An iterable of all jobs.
+            Iterable[Job]: A traversable collection representing the queue's state.
         """
         pass  # pragma: no cover
 
     @abstractmethod
     def delete(self, job: Job) -> None:
-        """Remove a job from the queue.
+        """Purge a completed or failed job from the queue's tracked state.
 
         Args:
-            job (Job): The job to remove.
+            job (Job): The specific job instance to remove.
         """
         pass  # pragma: no cover
 
 
 class LocalQueue(Queue):
-    """A concrete Queue implementation using a local list."""
+    """A concrete Queue implementation that stores jobs within local memory."""
 
     def __init__(self, job_class: type[Job] = QueuedJob) -> None:
-        """Initialize the local queue.
+        """Initialize an empty, local memory-backed list for managing job tracking.
 
         Args:
-            job_class: The default class to use for jobs.
+            job_class: The expected class type for queued jobs.
         """
         super().__init__(job_class)
         self._jobs: list[Job] = []
 
     def queue_job(self, job: Job) -> None:
-        """Add the given job to this queue.
+        """Append the given job sequentially to the internal Python list.
 
         Args:
-            job (Job): The job to add.
+            job (Job): The job to append.
         """
         self._jobs.append(job)
 
     def all_jobs(self) -> Iterable[Job]:
-        """Get all jobs currently in the queue.
+        """Return a snapshot of all active jobs currently in the local list.
+
+        We return a fresh copy via `list()` to prevent mutation errors if the
+        consumer iterates over the list while another thread/process deletes jobs.
 
         Returns:
-            Iterable[Job]: An iterable of all jobs.
+            Iterable[Job]: A copy of the current internal job array.
         """
         return list(self._jobs)
 
     def delete(self, job: Job) -> None:
-        """Remove a job from the queue.
+        """Erase a job from the internal list if it exists.
 
         Args:
-            job (Job): The job to remove.
+            job (Job): The explicit job reference to match and remove.
         """
         if job in self._jobs:
             self._jobs.remove(job)
