@@ -12,7 +12,8 @@ This project uses specific tooling and standards for Python development. Please 
 
 ## Code Style & Standards
 
-1. **Type Hints:** All new code must be fully type-hinted. Use modern syntax (`list[str]`, `str | None`) instead of `typing.List`, `typing.Optional`.
+1. **Type Hints:** All new code must be fully type-hinted. Use modern syntax (`list[str]`, `str | None`) instead of `typing.List`, `typing.Optional`. In the event that typing cannot be applied, leave it off rather than using `Any` unless the intent is actually to support all data types.
+1. **Nesting:** Keep nesting low where possible. Use early returns and `continue` statements in loops rather than nesting within an `if` block.
 1. **Docstrings:** Use Google-style docstrings for all modules, classes, and public methods.
 1. **Imports:** Group imports: standard library, third-party, local. `ruff` handles sorting, but be mindful.
 1. **Error Handling:** Use specific exceptions. Avoid bare `except:`.

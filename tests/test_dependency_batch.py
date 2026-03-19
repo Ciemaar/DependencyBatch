@@ -125,6 +125,9 @@ def test_store_results() -> None:
     res_path = folder / "output.txt"
     job.results.add(res_path)
 
+    # Add a non-existent path to test the `continue` branch in handle_results
+    job.results.add(Path("does_not_exist.txt"))
+
     # We need to track if store_results is called.
     # We can patch it or use a custom subclass.
     stored_path = None
@@ -176,6 +179,11 @@ def test_queue_operations() -> None:
     q.delete(job1)
     assert len(list(q.all_jobs())) == 1
     assert list(q.all_jobs())[0] == job2
+
+    # Test deleting a job not in the queue (early return branch)
+    job3 = LocalJob()
+    q.delete(job3)
+    assert len(list(q.all_jobs())) == 1
 
 
 @given(st.lists(st.integers()))

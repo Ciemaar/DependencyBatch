@@ -97,8 +97,9 @@ class Job(ABC):  # noqa: B024
         try:
             with tarfile.open(temp_path, mode="w:gz") as tar:
                 for res_path in self.results:
-                    if res_path.exists():
-                        tar.add(res_path, arcname=res_path.name)
+                    if not res_path.exists():
+                        continue
+                    tar.add(res_path, arcname=res_path.name)
 
             self.store_results(temp_path)
         finally:
@@ -289,5 +290,6 @@ class LocalQueue(Queue):
         Args:
             job (Job): The explicit job reference to match and remove.
         """
-        if job in self._jobs:
-            self._jobs.remove(job)
+        if job not in self._jobs:
+            return
+        self._jobs.remove(job)

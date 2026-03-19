@@ -11,6 +11,7 @@ nav:
   - Developer Guide: developer_guide.md
   - Tooling Evaluation: tooling_evaluation.md
   - Session Instructions: session_instructions.md
+  - Reusable Prompts: reusable_prompts.md
 markdown_extensions:
   - admonition
   - codehilite:
