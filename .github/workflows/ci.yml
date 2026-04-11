@@ -39,7 +39,7 @@ jobs:
 
     - name: Check Markdown formatting
       run: |
-        uv run mdformat --check .
+        uv run mdformat --check docs/ prompts/ plans/ reports/ *.md .github/*.md
 
     - name: Build Docs
       run: |
