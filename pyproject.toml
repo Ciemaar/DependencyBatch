@@ -2,6 +2,9 @@
 requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [project]
 name = "dependency_batch"
 version = "0.1.0"
@@ -46,7 +49,7 @@ testpaths = [
 ]
 
 [tool.coverage.run]
-source = ["dependency_batch"]
+source = ["src/dependency_batch"]
 
 [tool.coverage.report]
 show_missing = true
@@ -54,4 +57,4 @@ fail_under = 100
 
 [tool.pyright]
 pythonVersion = "3.12"
-typeCheckingMode = "basic"
+typeCheckingMode = "strict"

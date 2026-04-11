@@ -13,7 +13,7 @@ class LocalJob(Job):
 
     def __init__(self, files: dict[str, str] | None = None) -> None:
         super().__init__()
-        self._initial_files = files or {}
+        self._initial_files = files if files is not None else {}
         # Explicitly declare local_dir and _temp_dir_obj to satisfy static analysis
         # (they are already initialized in super().__init__ but pylint can be strict)
         self.local_dir: Path | None = None
@@ -189,7 +189,7 @@ def test_queue_operations() -> None:
 @given(st.lists(st.integers()))
 def test_queue_hypothesis(items: list[int]) -> None:
     q = LocalQueue()
-    jobs = []
+    jobs: list[LocalJob] = []
     for i in items:
         j = LocalJob({"id": str(i)})
         q.queue_job(j)
