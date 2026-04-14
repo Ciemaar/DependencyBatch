@@ -24,9 +24,10 @@ pip install -e ".[dev]"
 
 For comprehensive information on how to use and contribute to this project, please refer to the following guides:
 
-- **[User Guide](docs/user_guide.md)**: Explains the core concepts, custom jobs, and queue management.
-- **[Developer Guide](docs/developer_guide.md)**: Covers environment setup, testing, code quality tools, and CI/CD.
+- **[User Guide](USER_GUIDE.md)**: Explains the core concepts, custom jobs, and queue management.
+- **[Developer Guide](DEVELOPER_GUIDE.md)**: Covers environment setup, testing, code quality tools, and CI/CD.
 - **[Tooling Evaluation](docs/tooling_evaluation.md)**: Justification for our adopted development tools.
+- **[Sources](SOURCES.md)**: Bibliography of external sources.
 
 This project uses `mkdocs` with the Material theme to build documentation. You can view the full documentation locally by running:
 

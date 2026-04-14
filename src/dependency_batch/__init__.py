@@ -6,6 +6,7 @@ It includes support for local file handling and tarball archiving for jobs and q
 import os
 import tarfile
 import tempfile
+import typing
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from pathlib import Path
@@ -172,6 +173,7 @@ class Job(ABC):  # noqa: B024
 
         # Open tar for writing
         with tarfile.open(fileobj=fileobj, mode=mode) as tfile:  # type: ignore[call-overload]
+            tfile = typing.cast(tarfile.TarFile, tfile)
             for file_path in self.get_filenames():
                 tfile.add(file_path, arcname=file_path.name, recursive=True)
 

@@ -25,28 +25,30 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -e ".[dev]"
+        uv sync --all-extras --locked
 
     - name: Lint with Ruff
       run: |
-        ruff check .
-        ruff format --check .
+        uv run ruff check .
+        uv run ruff format --check .
 
     - name: Check Markdown formatting
       run: |
-        mdformat --check .
+        uv run mdformat --check docs/ prompts/ plans/ reports/ *.md .github/*.md
 
     - name: Build Docs
       run: |
-        mkdocs build --strict
+        uv run mkdocs build --strict
 
     - name: Type check with Pyright
       run: |
-        pyright .
+        uv run pyright .
 
     - name: Test with Pytest
       run: |
-        PYTHONPATH=. pytest
+        PYTHONPATH=src uv run pytest
