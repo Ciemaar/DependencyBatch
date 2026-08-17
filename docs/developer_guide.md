@@ -134,6 +134,11 @@ The CI pipeline runs:
 
 All these checks must pass before a PR can be merged.
 
+## Version Control Guidelines
+
+- **Rebasing & Merging:** When working on an existing, previous branch (i.e., rebasing or merging), features must not be removed if they've been added to the main branch in the intermediate interval.
+- **PR References:** All the branches being merged in as well as their matching PRs must be referenced in the commit comments and any new PRs.
+
 ## Architecture Guidelines
 
 - **Python Version:** Always write code compatible with Python 3.12+. Avoid using deprecated standard library functions (e.g., use `tempfile` instead of `os.tmpnam`).

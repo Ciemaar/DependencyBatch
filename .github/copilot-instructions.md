@@ -15,6 +15,10 @@ This project uses specific tooling and standards for Python development. Please 
 - **CLI Framework:** Mandate `click` for CLIs and require a `--verbose` flag that sets logging to `DEBUG`. (No `argparse`).
 - **Database/Web Frameworks:** Migrate `pymongo` to `motor.motor_asyncio.AsyncIOMotorClient`. Use `FastAPI` to replace complex JS single-page applications.
 
+## Git & Version Control
+
+- **Rebasing & Merging:** When working on an existing, previous branch (i.e., rebasing or merging), features must not be removed if they have been added to the main branch in the intermediate interval. All branches being merged in, as well as their matching PRs, must be referenced in the commit comments and any new PRs.
+
 ## Code Style & Standards
 
 1. **Type Hints:** All new code must be fully type-hinted. Use modern syntax (`list[str]`, `str | None`) instead of `typing.List`, `typing.Optional`. Avoid `typing.Any`.
