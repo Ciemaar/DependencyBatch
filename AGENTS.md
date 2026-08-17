@@ -5,15 +5,21 @@ This project uses specific tooling and standards for Python development. Please 
 ## Project Context
 
 - **Language:** Python 3.12+
-- **Testing:** `pytest` with `hypothesis` for property-based testing.
+- **Testing:** `pytest` with `hypothesis` for property-based testing and `pytest-cov` for coverage.
 - **Linting & Formatting:** `ruff` universally; `mdformat` for Markdown.
+- **Spell Checking:** `codespell`.
 - **Type Checking:** `pyright` in strict mode.
+- **Documentation:** `mkdocs` with `mkdocs-material`. Maintain root-level `USER_GUIDE.md`, `DEVELOPER_GUIDE.md`, `SOURCES.md`, and `README.md`. Agentic session docs must be stored inside the `prompts/`, `plans/`, and `reports/` directories.
+- **Git Hooks:** `pre-commit` for automation.
+- **CI:** GitHub Actions run `ruff`, `mdformat`, `mkdocs`, `pyright`, and `pytest` (enforcing 100% test coverage) using `uv`.
 - **AWS Support:** Deferred. Do not implement AWS stubs (S3, SQS) at this time.
 - **Data Privacy & LLMs:** Treat data as private and local-first. Never send sensitive data to third-party cloud LLM APIs. Default to local inference servers (e.g., Ollama).
-- **Package Management:** `uv` is exclusively mandated. `pip`, `poetry`, and `pipenv` are prohibited. Ensure `uv.lock` is always checked into version control.
-- **Configuration Model:** Mandate `pydantic-settings` universally for configs.
+- **Package Management:** `uv` is exclusively mandated for setup and execution. `pip`, `poetry`, and `pipenv` are prohibited. Use `uv sync` to install dependencies and `uv run` to execute tools. Ensure `uv.lock` is always checked into version control.
+- **Configuration Model:** Most configurations (`ruff`, `pyright`, `pytest`, `coverage`) are centralized in `pyproject.toml`. Exceptions are `.pre-commit-config.yaml` and `mkdocs.yml`. Mandate `pydantic-settings` universally for app configs.
 - **CLI Framework:** Mandate `click` for CLIs and require a `--verbose` flag that sets logging to `DEBUG`. (No `argparse`).
 - **Database/Web Frameworks:** Migrate `pymongo` to `motor.motor_asyncio.AsyncIOMotorClient`. Use `FastAPI` to replace complex JS single-page applications.
+- **Directory Layout:** The core library package is named `dependency_batch` and strictly uses a `src`-based directory layout (`src/dependency_batch`).
+- **Agent Instructions:** The project maintains `AGENTS.md` and `.github/copilot-instructions.md` to provide context and instructions for AI agents and JetBrains/Copilot users.
 
 ## Code Style & Standards
 
@@ -25,7 +31,7 @@ This project uses specific tooling and standards for Python development. Please 
 1. **Exceptions:** Do not use `assert` statements in production code. Raise an appropriate built-in exception instead.
 1. **Serialization:** Always prefer YAML with `yaml.safe_load`. Avoid `pickle` for untrusted data.
 1. **Nesting:** Keep nesting low where possible. Use early returns and `continue` statements in loops rather than nesting within an `if` block.
-1. **Docstrings:** Use Google-style docstrings for all modules, classes, and public methods.
+1. **Docstrings:** Use meaningful Google-style docstrings for all modules, classes, and public methods (not just placeholders).
 1. **Imports:** Group imports: standard library, third-party, local. `ruff` handles sorting, but be mindful.
 1. **Error Handling:** Use specific exceptions. Avoid bare `except:`.
 
@@ -33,15 +39,16 @@ This project uses specific tooling and standards for Python development. Please 
 
 - Write tests in `tests/`.
 - Use `pytest` fixtures where appropriate.
-- Aim for high test coverage, especially for core logic in `dependency_batch/`.
-- Run tests with `PYTHONPATH=. pytest`.
+- Strict 100% test coverage is enforced, especially for core logic in `src/dependency_batch/`.
+- Run tests with `PYTHONPATH=src uv run pytest` after running linting and formatting via `uv run ruff check` and `uv run ruff format`.
 
 ## Tooling Commands
 
-- **Lint:** `ruff check .`
-- **Format:** `ruff format .`
-- **Type Check:** `pyright .`
-- **Test:** `PYTHONPATH=. pytest`
+- **Dependencies:** `uv sync`
+- **Lint:** `uv run ruff check .`
+- **Format:** `uv run ruff format .`
+- **Type Check:** `uv run pyright .`
+- **Test:** `PYTHONPATH=src uv run pytest`
 
 ## JetBrains IDE / Copilot Specifics
 
