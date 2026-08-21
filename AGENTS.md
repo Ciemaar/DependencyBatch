@@ -9,7 +9,7 @@ This project uses specific tooling and standards for Python development. Please 
 - **Linting & Formatting:** `ruff` universally; `mdformat` for Markdown.
 - **Spell Checking:** `codespell`.
 - **Type Checking:** `pyright` in strict mode.
-- **Documentation:** `mkdocs` with `mkdocs-material`. Maintain root-level `USER_GUIDE.md`, `DEVELOPER_GUIDE.md`, `SOURCES.md`, and `README.md`. Agentic session docs must be stored inside the `prompts/`, `plans/`, and `reports/` directories.
+- **Documentation:** `mkdocs` with `mkdocs-material`. Maintain root-level `USER_GUIDE.md`, `DEVELOPER_GUIDE.md`, `SOURCES.md`, and `README.md`. Agentic session docs must be stored inside the `prompts/`, `plans/`, and `reports/` directories. Tool evaluations must be recorded in `reports/tool_evaluations.md`.
 - **Git Hooks:** `pre-commit` for automation.
 - **CI:** GitHub Actions run `ruff`, `mdformat`, `mkdocs`, `pyright`, and `pytest` (enforcing 100% test coverage) using `uv`.
 - **AWS Support:** Deferred. Do not implement AWS stubs (S3, SQS) at this time.
