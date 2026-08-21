@@ -27,6 +27,12 @@ dev = [
     "codespell>=2.4.0"
 ]
 
+[dependency-groups]
+dev = [
+    "hypothesis>=6.151.12",
+    "pytest-cov>=7.1.0",
+]
+
 [tool.ruff]
 line-length = 88
 target-version = "py312"
