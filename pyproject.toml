@@ -9,7 +9,7 @@ where = ["src"]
 name = "dependency_batch"
 version = "0.1.0"
 description = "A job queue model library"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = []
 
 [project.optional-dependencies]
@@ -35,7 +35,7 @@ dev = [
 
 [tool.ruff]
 line-length = 88
-target-version = "py312"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "D"]
@@ -62,5 +62,5 @@ show_missing = true
 fail_under = 100
 
 [tool.pyright]
-pythonVersion = "3.12"
+pythonVersion = "3.14"
 typeCheckingMode = "strict"

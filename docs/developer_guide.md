@@ -6,7 +6,7 @@ Welcome to the `dependency_batch` project developer guide! This document explain
 
 ### Prerequisites
 
-- Python 3.12 or higher
+- Python 3.14 or higher
 - Git
 
 ### Creating a Virtual Environment
@@ -141,6 +141,6 @@ All these checks must pass before a PR can be merged.
 
 ## Architecture Guidelines
 
-- **Python Version:** Always write code compatible with Python 3.12+. Avoid using deprecated standard library functions (e.g., use `tempfile` instead of `os.tmpnam`).
+- **Python Version:** Always write code compatible with Python 3.14+. Avoid using deprecated standard library functions (e.g., use `tempfile` instead of `os.tmpnam`).
 - **Security:** Be mindful of file operations. When working with archives, use secure extraction methods (e.g., `tarfile.extractall(filter="data")` to prevent ZipSlip attacks).
 - **AWS Integration:** AWS integration (S3, SQS) is explicitly deferred. Do not implement AWS stubs or features without consulting the project roadmap.

@@ -132,4 +132,4 @@ Any subclass of `Job` must implement `store_results()` to dictate what happens t
 
 ## Security Note
 
-The `Job.get_local_folder` method securely extracts tar archives using `filter="data"` to prevent directory traversal attacks (TarSlip). This feature requires Python 3.12 or higher.
+The `Job.get_local_folder` method securely extracts tar archives using `filter="data"` to prevent directory traversal attacks (TarSlip). This feature requires Python 3.14 or higher.

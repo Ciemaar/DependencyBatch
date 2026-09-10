@@ -4,7 +4,7 @@ A modern, type-safe Python library for modeling and managing job queues and batc
 
 ## Requirements
 
-- Python 3.12 or higher
+- Python 3.14 or higher
 
 ## Installation
 
