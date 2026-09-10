@@ -5,7 +5,7 @@ If you wish to use an AI agent (such as Jules) to achieve a similar modernizatio
 ## 1. Initial Modernization
 
 ```text
-Upgrade this codebase to modern libraries, Python versions and development practices. Add support for at least python 3.13. Add ruff format, ruff check, tests, and type hinting. Add stubs for the AWS services used in testing.
+Upgrade this codebase to modern libraries, Python versions and development practices. Add support for at least python 3.14. Add ruff format, ruff check, tests, and type hinting. Add stubs for the AWS services used in testing.
 ```
 
 ## 2. Refine Architecture & Focus

@@ -4,7 +4,7 @@ This project uses specific tooling and standards for Python development. Please 
 
 ## Project Context
 
-- **Language:** Python 3.12+
+- **Language:** Python 3.14+
 - **Testing:** `pytest` with `hypothesis` for property-based testing and `pytest-cov` for coverage.
 - **Linting & Formatting:** `ruff` universally; `mdformat` for Markdown.
 - **Spell Checking:** `codespell`.

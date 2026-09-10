@@ -4,7 +4,7 @@ This document records the sequence of instructions, requirements, and feedback p
 
 ## Phase 1: Initial Modernization & Setup
 
-1. **Core Upgrade:** Upgrade the legacy codebase to modern libraries, target Python 3.12/3.13, and adopt modern development practices.
+1. **Core Upgrade:** Upgrade the legacy codebase to modern libraries, target Python 3.14/3.15, and adopt modern development practices.
 1. **Tooling Implementation:** Introduce `ruff` (formatting and linting), type hinting, and a test suite.
 1. **AWS Stubs:** Initially requested AWS service stubs for testing, but immediately refined to **defer AWS stubs to future work**.
 1. **Legacy Code:** Fill in missing architectural pieces (`QueuedJob`, `LocalQueue`) and replace deprecated functions (e.g., `os.tmpnam`).
