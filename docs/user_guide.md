@@ -36,6 +36,7 @@ When a job needs to work with local files, it uses a local folder. You can imple
 from dependency_batch import Job
 from pathlib import Path
 
+
 class MyAnalysisJob(Job):
     def __init__(self, data_file: str | Path):
         super().__init__()

@@ -43,6 +43,7 @@ You can inherit from `Job` to create custom job types. The base `Job` class hand
 ```python
 from dependency_batch import Job
 
+
 class MyJob(Job):
     def get_filenames(self) -> list[str]:
         # Implement logic to return a list of file paths associated with the job
