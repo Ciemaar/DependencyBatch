@@ -1,4 +1,4 @@
-import pytest
+lazy import pytest
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:

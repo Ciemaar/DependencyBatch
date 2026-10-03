@@ -3,14 +3,14 @@
 It includes support for local file handling and tarball archiving for jobs and queues.
 """
 
-import os
-import tarfile
-import tempfile
-import typing
-from abc import ABC, abstractmethod
-from collections.abc import Iterable, Iterator
-from pathlib import Path
-from types import TracebackType
+lazy import os
+lazy import tarfile
+lazy import tempfile
+lazy import typing
+lazy from abc import ABC, abstractmethod
+lazy from collections.abc import Iterable, Iterator
+lazy from pathlib import Path
+lazy from types import TracebackType
 
 
 class Job(ABC):  # noqa: B024
