@@ -64,4 +64,4 @@ fail_under = 100
 [tool.pyright]
 pythonVersion = "3.15"
 typeCheckingMode = "strict"
-ignore = ["src/dependency_batch/__init__.py", "tests/conftest.py", "tests/test_dependency_batch.py", "tests/test_e2e.py"]
+ignore = ["src/dependency_batch/__init__.py", "tests/test_dependency_batch.py", "tests/test_e2e.py", "tests/conftest.py"]
