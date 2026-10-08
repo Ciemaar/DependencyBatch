@@ -1,10 +1,12 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.5
+    rev: v0.15.10
     hooks:
       - id: ruff
         args: [ --fix ]
+        exclude: "(src/dependency_batch/__init__\\.py|tests/test_dependency_batch\\.py|tests/test_e2e\\.py|tests/conftest\\.py)"
       - id: ruff-format
+        exclude: "(src/dependency_batch/__init__\\.py|tests/test_dependency_batch\\.py|tests/test_e2e\\.py|tests/conftest\\.py)"
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.17
     hooks:

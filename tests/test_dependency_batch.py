@@ -1,11 +1,11 @@
-import tarfile
-import tempfile
-from pathlib import Path
+lazy import tarfile
+lazy import tempfile
+lazy from pathlib import Path
 
-from hypothesis import given
-from hypothesis import strategies as st
+lazy from hypothesis import given
+lazy from hypothesis import strategies as st
 
-from dependency_batch import Job, LocalQueue, QueuedJob
+lazy from dependency_batch import Job, LocalQueue, QueuedJob
 
 
 class LocalJob(Job):

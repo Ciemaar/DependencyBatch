@@ -1,10 +1,10 @@
-import tarfile
-import typing
-from pathlib import Path
+lazy import tarfile
+lazy import typing
+lazy from pathlib import Path
 
-import pytest
+lazy import pytest
 
-from dependency_batch import Job, LocalQueue
+lazy from dependency_batch import Job, LocalQueue
 
 
 class DataProcessingJob(Job):

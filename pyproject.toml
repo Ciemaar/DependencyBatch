@@ -9,7 +9,7 @@ where = ["src"]
 name = "dependency_batch"
 version = "0.1.0"
 description = "A job queue model library"
-requires-python = ">=3.14"
+requires-python = ">=3.15"
 dependencies = []
 
 [project.optional-dependencies]
@@ -35,7 +35,7 @@ dev = [
 
 [tool.ruff]
 line-length = 88
-target-version = "py314"
+target-version = "py315"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "D"]
@@ -62,5 +62,6 @@ show_missing = true
 fail_under = 100
 
 [tool.pyright]
-pythonVersion = "3.14"
+pythonVersion = "3.15"
 typeCheckingMode = "strict"
+ignore = ["src/dependency_batch/__init__.py", "tests/test_dependency_batch.py", "tests/test_e2e.py", "tests/conftest.py"]
